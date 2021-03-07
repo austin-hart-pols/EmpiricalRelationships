@@ -1,0 +1,142 @@
+---
+title: "DESCRIBING RELATIONSHIPS"
+subtitle: "1. Group Comparisons"
+author: "Austin Hart"
+institute: "American University"
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    css: [default, rladies, rladies-fonts]
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+knitr::opts_chunk$set(
+  message=FALSE, warning=FALSE, eval = TRUE, echo = FALSE, 
+  fig.align = 'center', dev='svg'
+)
+```
+
+```{r results='hide'}
+library(tidyverse)
+library(magrittr)
+library(kableExtra)
+
+setwd("C:\\Users\\ahart\\Dropbox\\SIS 600 AH\\2021S 600\\content\\w07 associations\\GroupDiffs")
+
+load('DCPS testing.RData')
+```
+
+
+# Group Comparison
+
+
+Assessing the relationship between:  
+
+- Nominal or binary exposure variable (X)  
+
+- Continuous outcome variable (Y)  
+
+
+Data used: "DCPS testing.RData"
+
+
+---
+# Summary stats revisited
+
+.pull-left[
+Math proficiency in 108 DC Public Schools based on 2017-18 PARCC assessment data.  
+
+```{r sumtab}
+  dcps %>%
+    summarize(
+      N = n(),
+      Average = mean(ProfMath),
+      Median = median(ProfMath)
+    ) %>%
+  kbl(digits = 1, caption = "Summary statistics",format = "html") %>%
+  kable_paper(bootstrap_options = "striped", full_width = F, position = "center") 
+
+```
+
+]
+
+.pull-right[
+```{r boxsum, fig.width=3.5, fig.height=5, dpi=200}
+  boxplot(dcps$ProfMath,
+        main = "Math Proficiency, DCPS 2017",
+        ylab = "% testing at grade level", 
+        ylim = c(0,100), col="#69b3a2")
+  abline(h = mean(dcps$ProfMath), col = 'red')
+```
+]
+
+---
+# Group comparison
+
+> Does the distribution on the outcome measure (i.e. mean of Y) differ by groups?
+
+- Calculate mean outcome for each group of X
+
+- Compare and contrast: $\bar{Y}_H$ vs $\bar{Y}_M$ vs $\bar{Y}_E$
+
+
+---
+# Math proficiency by school level
+
+.pull-left[
+
+Does math proficiency differ by level of schooling in DC public schools?  
+
+
+```{r sumtabgrp}
+  dcps %>%
+    group_by(SchType) %>%
+    summarize(
+      N = n(),
+      Average = mean(ProfMath),
+      Median = median(ProfMath)
+    ) %>%
+  kbl(digits = 1, caption = "Math Proficiency by Type", type = 'html') %>%
+  kable_paper(bootstrap_options = "striped", full_width = F) 
+
+```
+]
+
+.pull-right[
+```{r boxsumgrp, fig.width=3.75, fig.height=5, dpi=250}
+  boxplot(ProfMath ~ SchType, data = dcps,
+        main = "Math Proficiency, DCPS 2017",
+        xlab = NULL,
+        ylab = "% testing at grade level", 
+        ylim = c(0,100), col="#69b3a2",
+        names=c("Elem.","Middle","High"))
+```
+]
+
+---
+class: inverse
+
+# Group Comparison
+
+
+- Assessing relationship between:  
+
+  - Nominal or binary exposure variable (X)  
+
+  - Continuous outcome variable (Y)  
+
+- Process: calculate group means and compare!  
+  
+- More info  
+
+  - R replication script  
+  
+  - RGuide  
+  
+  - Textbook chapter
